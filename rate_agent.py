@@ -121,7 +121,8 @@ def process_rates_data(df):
     df = df.ffill()
     
     # 2. 移除太早期的全空數據
-    df = df.dropna(subset=['US 10Y Yield'], how='all')
+    if 'US 10Y Yield' in df.columns:
+        df = df.dropna(subset=['US 10Y Yield'], how='all')
 
     # 3. 計算淨流動性 (Net Liquidity) - 單位防呆
     # 公式：Fed Assets (Millions) - TGA (Billions) - RRP (Billions)

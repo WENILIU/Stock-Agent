@@ -151,6 +151,10 @@ try:
     with st.spinner("正在連線至聯準會資料庫 (FRED) 下載最新數據..."):
         raw_df = get_macro_data()
         
+    if 'CPI (Headline)' not in raw_df.columns:
+        st.error("❌ 嚴重錯誤：無法取得 CPI 數據，請檢查 API Key 或網路連線。")
+        st.stop()
+
     # 確保至少有 CPI 數據才繼續
     raw_df = raw_df.dropna(subset=['CPI (Headline)'])
     _, df_yoy = process_data(raw_df)
