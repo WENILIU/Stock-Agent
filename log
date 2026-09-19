@@ -1,4 +1,4 @@
-$p = 'D:\AI 專案\StockAgent\finlab\database\disposal_outputs\factor_24_cohort_momentum'
+$p = 'D:\AI專案\StockAgent\finlab\database\disposal_outputs\factor_24_cohort_momentum'
 
 # 1. 樣本與稽核
 Import-Csv "$p\factor_24_input_audit.csv" | Format-Table -AutoSize
