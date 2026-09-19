@@ -1,0 +1,41 @@
+$p = 'D:\AI 專案\StockAgent\finlab\database\disposal_outputs\factor_24_cohort_momentum'
+
+# 1. 樣本與稽核
+Import-Csv "$p\factor_24_input_audit.csv" | Format-Table -AutoSize
+
+# 2. 群組統計（前 10 列）
+Import-Csv "$p\factor_24_cohort_stats.csv" |
+  Sort-Object release_cohort_id -Descending |
+  Select-Object -First 10 |
+  Format-Table -AutoSize
+
+# 3. 分組計數
+Import-Csv "$p\factor_24_event_features.csv" |
+  Where-Object { $_.cohort_momentum_quintile -ne '' -and $_.cohort_momentum_quintile -ne $null } |
+  Group-Object cohort_momentum_quintile |
+  Select-Object Name, Count |
+  Format-Table -AutoSize
+
+# 4. 五分位摘要
+Import-Csv "$p\factor_24_quintile_summary.csv" |
+  Where-Object { $_.outcome -in @(
+    'ret_post_5d',
+    'ret_post_20d',
+    'market_adj_ret_post_5d',
+    'market_adj_ret_post_20d'
+  )} |
+  Format-Table group_value,outcome,n_events,mean_return,median_return,win_rate,q25,q75,exploratory_only -AutoSize
+
+# 5. 連續性檢定
+Import-Csv "$p\factor_24_spearman.csv" |
+  Where-Object { $_.outcome -in @(
+    'ret_post_5d',
+    'ret_post_20d',
+    'market_adj_ret_post_5d',
+    'market_adj_ret_post_20d'
+  )} |
+  Format-Table factor_name,outcome,n_events,spearman_rho,pvalue,exploratory_only -AutoSize
+
+# 6. 極端組比較
+Import-Csv "$p\factor_24_pairwise_tests.csv" |
+  Format-Table comparison,outcome,n_a,n_b,mean_a,mean_b,median_a,median_b,welch_t_pvalue,mann_whitney_pvalue,exploratory_only -AutoSize
